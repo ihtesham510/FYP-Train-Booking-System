@@ -25,6 +25,7 @@ import { PasswordInput } from '@/components/ui/password-input'
 import { isValidPhoneNumber } from 'react-phone-number-input'
 import { useConvex } from 'convex/react'
 import { api } from '@convex/_generated/api'
+import { useAuth } from '@/context/auth-context'
 
 export default function SignUp() {
   const convex = useConvex()
@@ -70,8 +71,17 @@ export default function SignUp() {
     resolver: zodResolver(formSchema),
   })
 
+  const { signUp } = useAuth()
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
+      signUp({
+        email: values.email,
+        user_name: values.username,
+        first_name: values.first_name,
+        last_name: values.last_name,
+        phone: values.phone_no,
+        password: values.password,
+      })
       toast.success('Registered Successfully')
     } catch (error) {
       console.error('Form submission error', error)
