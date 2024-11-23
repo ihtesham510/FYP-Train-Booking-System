@@ -37,7 +37,7 @@ export default function SignUp() {
       last_name: z.string().min(2).max(40),
       email: z.string().email(),
       username: z.string().min(4).max(20),
-      gender: z.string(),
+      gender: z.union([z.literal('male'), z.literal('female')]),
       phone_no: z.string().refine(isValidPhoneNumber, {
         message: 'Invalid phone number',
       }),
@@ -83,6 +83,7 @@ export default function SignUp() {
         email: values.email,
         user_name: values.username,
         first_name: values.first_name,
+        gender: values.gender,
         last_name: values.last_name,
         phone: values.phone_no,
         password: values.password,
@@ -100,19 +101,20 @@ export default function SignUp() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className='space-y-4 flex flex-col justify-between lg:px-8 lg:pt-2 lg:w-[50%] w-full p-10'
+          className='space-y-2 flex flex-col justify-between lg:px-8 lg:pt-2 lg:w-[50%] w-full p-10'
         >
-          <div className='flex flex-col w-full gap-3 mt-4'>
-            <div className='flex justify-between'>
-              <h1 className='text-3xl font-bold'>Register</h1>
-              <Link to='/sign-in'>
-                <Button variant='ghost' className='text-lg'>
-                  Sign In
-                </Button>
-              </Link>
-            </div>
+          <div className='text-end mt-5'>
+            <Link to='/sign-in'>
+              <Button variant='ghost' className='text-lg'>
+                Sign In
+              </Button>
+            </Link>
+          </div>
+
+          <div className='flex flex-col w-full text-center gap-2 mt-4'>
+            <h1 className='text-3xl font-bold'>Create an Account</h1>
             <p className='text-md font-semibold text-primary/50'>
-              Register to book you first trip.
+              Create an Account and book you first trip.
             </p>
           </div>
           <div className='grid grid-cols-2 gap-4'>
@@ -123,7 +125,12 @@ export default function SignUp() {
                 <FormItem>
                   <FormLabel>First Name</FormLabel>
                   <FormControl>
-                    <Input placeholder='@first_name' type='text' {...field} />
+                    <Input
+                      placeholder='@first_name'
+                      type='text'
+                      {...field}
+                      required
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -137,7 +144,12 @@ export default function SignUp() {
                 <FormItem>
                   <FormLabel>Last Name</FormLabel>
                   <FormControl>
-                    <Input placeholder='@last_name' type='text' {...field} />
+                    <Input
+                      placeholder='@last_name'
+                      type='text'
+                      {...field}
+                      required
+                    />
                   </FormControl>
 
                   <FormMessage />
@@ -158,6 +170,7 @@ export default function SignUp() {
                       placeholder='user@example.com'
                       type='text'
                       {...field}
+                      required
                     />
                   </FormControl>
                   <FormMessage />
@@ -172,7 +185,12 @@ export default function SignUp() {
                 <FormItem>
                   <FormLabel>username</FormLabel>
                   <FormControl>
-                    <Input placeholder='@user_123' type='text' {...field} />
+                    <Input
+                      placeholder='@user_123'
+                      type='text'
+                      {...field}
+                      required
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -189,6 +207,7 @@ export default function SignUp() {
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  required
                 >
                   <FormControl>
                     <SelectTrigger>

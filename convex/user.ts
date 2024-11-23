@@ -13,6 +13,7 @@ export const createUser = mutation({
     first_name: v.string(),
     last_name: v.string(),
     user_name: v.string(),
+    gender: v.union(v.literal('male'), v.literal('female')),
     email: v.string(),
     phone: v.string(),
     password: v.string(),
