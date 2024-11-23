@@ -26,6 +26,7 @@ import { isValidPhoneNumber } from 'react-phone-number-input'
 import { useConvex } from 'convex/react'
 import { api } from '@convex/_generated/api'
 import { useAuth } from '@/context/auth-context'
+import { Link } from 'react-router-dom'
 
 export default function SignUp() {
   const convex = useConvex()
@@ -40,8 +41,12 @@ export default function SignUp() {
       phone_no: z.string().refine(isValidPhoneNumber, {
         message: 'Invalid phone number',
       }),
-      password: z.string().min(8).max(50),
-      confirm_password: z.string().min(8).max(50),
+      password: z
+        .string()
+        .min(8, { message: 'Password must be at least 8 characters.' }),
+      confirm_password: z
+        .string()
+        .min(8, { message: 'Password must be at least 8 characters.' }),
     })
     .superRefine(async (values, ctx) => {
       const { email, password, confirm_password } = values
@@ -95,12 +100,19 @@ export default function SignUp() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className='space-y-2 lg:px-8 lg:pt-2 lg:w-[50%] w-full p-10'
+          className='space-y-4 flex flex-col justify-between lg:px-8 lg:pt-2 lg:w-[50%] w-full p-10'
         >
-          <div className='flex flex-col gap-3 mt-4'>
-            <h1 className='text-3xl font-bold'>Register</h1>
+          <div className='flex flex-col w-full gap-3 mt-4'>
+            <div className='flex justify-between'>
+              <h1 className='text-3xl font-bold'>Register</h1>
+              <Link to='/sign-in'>
+                <Button variant='ghost' className='text-lg'>
+                  Sign In
+                </Button>
+              </Link>
+            </div>
             <p className='text-md font-semibold text-primary/50'>
-              Register to Book Your First Trip
+              Register to book you first trip.
             </p>
           </div>
           <div className='grid grid-cols-2 gap-4'>

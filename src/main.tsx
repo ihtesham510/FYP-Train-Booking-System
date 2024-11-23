@@ -14,6 +14,10 @@ import Notfound from '@/pages/404'
 
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string)
 
+const secretkey = import.meta.env.VITE_SECRET_KEY
+
+if (!secretkey) throw new Error('secret key must be provided')
+
 document.documentElement.classList.add('dark')
 
 createRoot(document.getElementById('root')!).render(
@@ -21,7 +25,7 @@ createRoot(document.getElementById('root')!).render(
     <Toaster />
     <Sonner position='top-left' expand />
     <ConvexProvider client={convex}>
-      <AuthProvider>
+      <AuthProvider secretKey={secretkey}>
         <BrowserRouter>
           <Routes>
             <Route path='/' element={<Home />} />

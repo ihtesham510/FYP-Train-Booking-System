@@ -7,12 +7,15 @@ import {
 } from 'react'
 import { api } from '@convex/_generated/api'
 import { useMutation, useQuery } from 'convex/react'
-import useLocalStorage from '@/hooks/use-local-storage'
+import useLocalStorage from '@/hooks/use-encrypted-local-storage'
 import { Id } from '@convex/_generated/dataModel'
 
-type SignInUser = Omit<User, '_id' | '_creationTime'> &
-  Partial<Pick<User, 'user_name' | 'email' | 'phone'>> &
-  Required<Pick<User, 'password'>>
+type SignInUser = {
+  phone?: string
+  username?: string
+  email?: string
+  password: string
+}
 
 type TypeAuthContext = {
   user: User | null | undefined
@@ -23,15 +26,23 @@ type TypeAuthContext = {
 
 const authContext = createContext<TypeAuthContext | null>(null)
 
-export function AuthProvider({ children }: PropsWithChildren) {
-  const [key, setkey] = useLocalStorage<Id<'user'>>('token')
+interface AuthProviderProps extends PropsWithChildren {
+  secretKey: string
+}
+
+export function AuthProvider({ children, secretKey }: AuthProviderProps) {
+  const [key, setkey] = useLocalStorage<Id<'user'>>('token', secretKey)
   const user = useQuery(api.user.getUser, { userId: key })
   const createUser = useMutation(api.user.createUser)
-  const authenticate = useMutation(api.user.signInUser)
+  const authenticate = useMutation(api.user.authenticateUser)
 
   const signIn = useCallback(
     async (user: SignInUser) => {
-      const key = await authenticate(user)
+      const key = await authenticate({
+        username: user.username,
+        email: user.email,
+        password: user.password,
+      })
       if (!key) setkey(undefined)
       return setkey(key as Id<'user'>)
     },

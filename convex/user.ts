@@ -30,41 +30,67 @@ export const createUser = mutation({
 })
 
 export const userExists = query({
-  args: { email: v.string() },
+  args: {
+    email: v.optional(v.string()),
+    username: v.optional(v.string()),
+    phone_no: v.optional(v.string()),
+  },
   async handler(ctx, args) {
-    return await ctx.db
-      .query('user')
-      .filter(q => q.eq(q.field('email'), args.email))
-      .first()
-      .then(data => !!data)
+    if (args.email) {
+      return !!(await ctx.db
+        .query('user')
+        .filter(q => q.eq(q.field('email'), args.email))
+        .first())
+    }
+    if (args.phone_no) {
+      return !!(await ctx.db
+        .query('user')
+        .filter(q => q.eq(q.field('phone'), args.phone_no))
+        .first())
+    }
+    if (args.username) {
+      return !!(await ctx.db
+        .query('user')
+        .filter(q => q.eq(q.field('user_name'), args.username))
+        .first())
+    }
   },
 })
 
-export const signInUser = mutation({
+export const authenticateUser = mutation({
   args: {
-    user_name: v.optional(v.string()),
+    username: v.optional(v.string()),
     email: v.optional(v.string()),
     phone: v.optional(v.string()),
     password: v.string(),
   },
   async handler(ctx, args) {
-    for (const key of Object.keys(args)) {
-      if (key === 'password') break
-      if (args[key as keyof typeof args]) {
-        const user = await ctx.db
-          .query('user')
-          .filter(q =>
-            q.eq(
-              q.field(key as keyof typeof args),
-              args[key as keyof typeof args],
-            ),
-          )
-          .first()
-
-        if (!user) return null
-        if (user.password !== args.password) return 'wrong password'
-        return user._id
-      }
+    if (args.username) {
+      const user = await ctx.db
+        .query('user')
+        .filter(q => q.eq(q.field('user_name'), args.username))
+        .first()
+      if (!user) return null
+      if (user.password !== args.password) return null
+      return user._id
+    }
+    if (args.email) {
+      const user = await ctx.db
+        .query('user')
+        .filter(q => q.eq(q.field('email'), args.email))
+        .first()
+      if (!user) return null
+      if (user.password !== args.password) return null
+      return user._id
+    }
+    if (args.phone) {
+      const user = await ctx.db
+        .query('user')
+        .filter(q => q.eq(q.field('phone'), args.phone))
+        .first()
+      if (!user) return null
+      if (user.password !== args.password) return null
+      return user._id
     }
   },
 })
