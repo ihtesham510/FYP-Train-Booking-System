@@ -9,7 +9,7 @@ import SignIn from '@/pages/sign-in'
 import { Toaster } from '@/components/ui/toaster'
 import { Toaster as Sonner } from '@/components/ui/sonner'
 import { ConvexProvider, ConvexReactClient } from 'convex/react'
-import { AuthContextProvider } from '@/context/user-context'
+import { AuthProvider } from '@/context/auth-context'
 import Notfound from '@/pages/404'
 
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string)
@@ -21,7 +21,7 @@ createRoot(document.getElementById('root')!).render(
     <Toaster />
     <Sonner position='top-left' expand />
     <ConvexProvider client={convex}>
-      <AuthContextProvider>
+      <AuthProvider>
         <BrowserRouter>
           <Routes>
             <Route path='/' element={<Home />} />
@@ -44,7 +44,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path='*' element={<Notfound />} />
           </Routes>
         </BrowserRouter>
-      </AuthContextProvider>
+      </AuthProvider>
     </ConvexProvider>
   </StrictMode>,
 )
