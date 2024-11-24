@@ -40,14 +40,14 @@ Create a new project.
 
 Go to your convex project dashboard head to Project-setting>URL & Deploy Keys and hit generate Deployment deploy key.
 
-![image info](./src/assets/Screenshot (1).png)
+![image info](src/assets/Screenshot_1.png)
 
 Copy the key generated.
 
 Head to your environment variables and paste the following environment variable.
 
-![image info](./src/assets/Screenshot (2).png)
+![image info](src/assets/Screenshot_2.png)
 
 Override the build command
 
-![image info](./src/assets/Screenshot (3).png)
+![image info](src/assets/Screenshot_3.png)
