@@ -41,6 +41,7 @@ export function AuthProvider({ children, secretKey }: AuthProviderProps) {
       const key = await authenticate({
         username: user.username,
         email: user.email,
+        phone: user.phone,
         password: user.password,
       })
       if (!key) setkey(undefined)
