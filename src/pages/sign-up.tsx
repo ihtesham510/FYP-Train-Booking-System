@@ -20,7 +20,6 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { PhoneInput } from '@/components/ui/phone-input'
-// import { Checkbox } from '@/components/ui/checkbox'
 import { PasswordInput } from '@/components/ui/password-input'
 import { isValidPhoneNumber } from 'react-phone-number-input'
 import { useConvex } from 'convex/react'
@@ -49,11 +48,33 @@ export default function SignUp() {
         .min(8, { message: 'Password must be at least 8 characters.' }),
     })
     .superRefine(async (values, ctx) => {
-      const { email, password, confirm_password } = values
+      const { email, username, password, confirm_password, phone_no } = values
 
-      const emailExists = await convex
-        .query(api.user.userExists, { email })
-        .then(data => data)
+      const emailExists = await convex.query(api.user.userExists, { email })
+
+      const phone_no_exists = await convex.query(api.user.userExists, {
+        phone_no,
+      })
+
+      const user_name_exists = await convex.query(api.user.userExists, {
+        username,
+      })
+
+      if (user_name_exists) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['username'],
+          message: 'Username already taken',
+        })
+      }
+
+      if (phone_no_exists) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['phone_no'],
+          message: 'Phone_no already exists',
+        })
+      }
 
       if (emailExists) {
         ctx.addIssue({
@@ -242,27 +263,6 @@ export default function SignUp() {
               </FormItem>
             )}
           />
-          {/**/}
-          {/* <FormField */}
-          {/*   control={form.control} */}
-          {/*   name='married' */}
-          {/*   render={({ field }) => ( */}
-          {/*     <FormItem className='flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4'> */}
-          {/*       <FormControl> */}
-          {/*         <Checkbox */}
-          {/*           checked={field.value} */}
-          {/*           onCheckedChange={field.onChange} */}
-          {/*         /> */}
-          {/*       </FormControl> */}
-          {/*       <div className='space-y-1 leading-none'> */}
-          {/*         <FormLabel>Married</FormLabel> */}
-          {/**/}
-          {/*         <FormMessage /> */}
-          {/*       </div> */}
-          {/*     </FormItem> */}
-          {/*   )} */}
-          {/* /> */}
-          {/**/}
           <FormField
             control={form.control}
             name='password'
