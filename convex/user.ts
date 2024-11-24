@@ -1,5 +1,7 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
+import { encrypt, decrypt } from './lib'
+
 export const getUser = query({
   args: { userId: v.optional(v.id('user')) },
   async handler(ctx, args) {
@@ -26,6 +28,7 @@ export const createUser = mutation({
     if (user) return null
     return await ctx.db.insert('user', {
       ...args,
+      password: encrypt(args.password),
     })
   },
 })
@@ -72,7 +75,7 @@ export const authenticateUser = mutation({
         .filter(q => q.eq(q.field('user_name'), args.username))
         .first()
       if (!user) return null
-      if (user.password !== args.password) return null
+      if (decrypt(user.password) !== args.password) return null
       return user._id
     }
     if (args.email) {
@@ -81,7 +84,7 @@ export const authenticateUser = mutation({
         .filter(q => q.eq(q.field('email'), args.email))
         .first()
       if (!user) return null
-      if (user.password !== args.password) return null
+      if (decrypt(user.password) !== args.password) return null
       return user._id
     }
     if (args.phone) {
@@ -90,7 +93,7 @@ export const authenticateUser = mutation({
         .filter(q => q.eq(q.field('phone'), args.phone))
         .first()
       if (!user) return null
-      if (user.password !== args.password) return null
+      if (decrypt(user.password) !== args.password) return null
       return user._id
     }
   },
@@ -107,7 +110,10 @@ export const updateUser = mutation({
     password: v.string(),
   },
   async handler(ctx, args) {
-    return await ctx.db.patch(args.userId, args)
+    return await ctx.db.patch(args.userId, {
+      ...args,
+      password: encrypt(args.password),
+    })
   },
 })
 
