@@ -1,25 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
-import CryptoJS from 'crypto-js'
+import { decrypt, encrypt } from '@/lib/utils'
 
 export default function useEncryptedLocalStorage<T>(
   key: string,
   secret_key: string,
   initialValue?: T,
 ) {
-  const encrypt = (value: string) => {
-    return CryptoJS.AES.encrypt(value, secret_key).toString()
-  }
-
-  const decrypt = (cipherText: string) => {
-    try {
-      const bytes = CryptoJS.AES.decrypt(cipherText, secret_key)
-      return bytes.toString(CryptoJS.enc.Utf8)
-    } catch (error) {
-      console.error('Failed to decrypt value:', error)
-      return null
-    }
-  }
-
   const [value, setValue] = useState<T | undefined>()
 
   useEffect(() => {
@@ -30,7 +16,7 @@ export default function useEncryptedLocalStorage<T>(
         return
       }
 
-      const decrypted = decrypt(storedItem)
+      const decrypted = decrypt(storedItem, secret_key)
       if (!decrypted) {
         setValue(initialValue)
         return
@@ -55,7 +41,7 @@ export default function useEncryptedLocalStorage<T>(
       }
 
       try {
-        const encrypted = encrypt(JSON.stringify(newValue))
+        const encrypted = encrypt(JSON.stringify(newValue), secret_key)
         localStorage.setItem(key, encrypted)
         setValue(newValue)
       } catch (error) {
