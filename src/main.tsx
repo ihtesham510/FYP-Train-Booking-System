@@ -11,6 +11,9 @@ import { Toaster as Sonner } from '@/components/ui/sonner'
 import { ConvexProvider, ConvexReactClient } from 'convex/react'
 import { AuthProvider } from '@/context/auth-context'
 import Notfound from '@/pages/404'
+import ProtectedRoute from './components/protected-route'
+import DashboardLayout from './pages/dashboard/layout'
+import Dashboard from './pages/dashboard'
 
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string)
 
@@ -23,7 +26,7 @@ document.documentElement.classList.add('dark')
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Toaster />
-    <Sonner position='top-left' expand />
+    <Sonner expand />
     <ConvexProvider client={convex}>
       <AuthProvider secretKey={secretkey}>
         <BrowserRouter>
@@ -45,6 +48,16 @@ createRoot(document.getElementById('root')!).render(
                 </UnProtectedRoute>
               }
             />
+            <Route
+              path='/dashboard'
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<Dashboard />}></Route>
+            </Route>
             <Route path='*' element={<Notfound />} />
           </Routes>
         </BrowserRouter>

@@ -102,17 +102,30 @@ export const authenticateUser = mutation({
 export const updateUser = mutation({
   args: {
     userId: v.id('user'),
-    first_name: v.string(),
-    last_name: v.string(),
-    user_name: v.string(),
-    email: v.string(),
-    phone: v.string(),
-    password: v.string(),
+    first_name: v.optional(v.string()),
+    last_name: v.optional(v.string()),
+    user_name: v.optional(v.string()),
+    email: v.optional(v.string()),
+    image_url: v.optional(
+      v.object({ url: v.string(), storageId: v.id('_storage') }),
+    ),
+    phone: v.optional(v.string()),
+    password: v.optional(v.string()),
   },
   async handler(ctx, args) {
     return await ctx.db.patch(args.userId, {
-      ...args,
-      password: encrypt(args.password),
+      first_name: args.first_name,
+      last_name: args.last_name,
+      email: args.email,
+      user_name: args.user_name,
+      phone: args.phone,
+      image_url: args.image_url
+        ? {
+            storageId: args.image_url?.storageId,
+            url: args.image_url?.url,
+          }
+        : undefined,
+      password: args.password ? encrypt(args.password) : undefined,
     })
   },
 })
@@ -121,5 +134,34 @@ export const deleteUser = mutation({
   args: { userId: v.id('user') },
   async handler(ctx, args) {
     return await ctx.db.delete(args.userId)
+  },
+})
+
+export const updateProfileImage = mutation({
+  args: {
+    userId: v.id('user'),
+    image_url: v.optional(
+      v.object({ url: v.string(), storageId: v.id('_storage') }),
+    ),
+  },
+  async handler(ctx, args) {
+    const user = await ctx.db.get(args.userId)
+    if (user?.image_url) {
+      await ctx.storage.delete(user.image_url.storageId)
+    }
+    return await ctx.db.patch(args.userId, { image_url: args.image_url })
+  },
+})
+
+export const getUploadUrl = mutation({
+  async handler(ctx) {
+    return await ctx.storage.generateUploadUrl()
+  },
+})
+
+export const getImageUrl = query({
+  args: { storageId: v.id('_storage') },
+  async handler(ctx, args) {
+    return await ctx.storage.getUrl(args.storageId)
   },
 })
