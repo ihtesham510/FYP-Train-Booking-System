@@ -10,7 +10,7 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/context/auth-context'
 import { LinkIcon, LogOutIcon, User, User2Icon } from 'lucide-react'
-import { Link, Outlet } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 
 import {
   Dialog,
@@ -58,6 +58,7 @@ export default function DashboardLayout() {
             image_url: { storageId: storageId, url: image_url },
           })
           toast.dismiss(t1)
+          setFile(null)
           return toast.success('Updated Successfully')
         }
       }
