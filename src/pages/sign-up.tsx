@@ -133,7 +133,7 @@ export default function SignUp() {
           </div>
 
           <div className='flex flex-col w-full text-center gap-2 mt-4'>
-            <h1 className='text-3xl font-bold'>Create an Account</h1>
+            <h1 className='text-4xl font-extrabold'>Create an Account</h1>
             <p className='text-md font-semibold text-primary/50'>
               Create an Account and book you first trip.
             </p>
