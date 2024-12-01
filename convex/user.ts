@@ -1,5 +1,5 @@
 import { mutation, query } from './_generated/server'
-import { v } from 'convex/values'
+import { ConvexError, v } from 'convex/values'
 import { encrypt, decrypt } from './lib'
 
 export const getUser = query({
@@ -106,26 +106,19 @@ export const updateUser = mutation({
     last_name: v.optional(v.string()),
     user_name: v.optional(v.string()),
     email: v.optional(v.string()),
-    image_url: v.optional(
-      v.object({ url: v.string(), storageId: v.id('_storage') }),
-    ),
     phone: v.optional(v.string()),
     password: v.optional(v.string()),
   },
   async handler(ctx, args) {
+    const user = await ctx.db.get(args.userId)
+    if (!user) throw new ConvexError('User not found')
     return await ctx.db.patch(args.userId, {
-      first_name: args.first_name,
-      last_name: args.last_name,
-      email: args.email,
-      user_name: args.user_name,
-      phone: args.phone,
-      image_url: args.image_url
-        ? {
-            storageId: args.image_url?.storageId,
-            url: args.image_url?.url,
-          }
-        : undefined,
-      password: args.password ? encrypt(args.password) : undefined,
+      first_name: args.first_name ?? user.first_name,
+      last_name: args.last_name ?? user.last_name,
+      email: args.email ?? user.email,
+      user_name: args.user_name ?? user.user_name,
+      phone: args.phone ?? user.phone,
+      password: args.password ? encrypt(args.password) : user.password,
     })
   },
 })
@@ -133,6 +126,10 @@ export const updateUser = mutation({
 export const deleteUser = mutation({
   args: { userId: v.id('user') },
   async handler(ctx, args) {
+    const user = await ctx.db.get(args.userId)
+    if (user?.image_url) {
+      await ctx.storage.delete(user.image_url.storageId)
+    }
     return await ctx.db.delete(args.userId)
   },
 })
