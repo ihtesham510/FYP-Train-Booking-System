@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import '@/index.css'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import Home from '@/pages/Home'
 import UnProtectedRoute from '@/components/un-protected-route'
 import SignUp from '@/pages/sign-up'
@@ -13,7 +13,9 @@ import { AuthProvider } from '@/context/auth-context'
 import Notfound from '@/pages/404'
 import ProtectedRoute from './components/protected-route'
 import DashboardLayout from './pages/dashboard/layout'
-import Dashboard from './pages/dashboard'
+import Search from './pages/dashboard/search'
+import Bookings from './pages/dashboard/bookings'
+import { ConvexQueryCacheProvider } from './cache/provider'
 
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string)
 
@@ -28,40 +30,44 @@ createRoot(document.getElementById('root')!).render(
     <Toaster />
     <Sonner expand />
     <ConvexProvider client={convex}>
-      <AuthProvider secretKey={secretkey}>
-        <BrowserRouter>
-          <Routes>
-            <Route path='/' element={<Home />} />
-            <Route
-              path='/sign-up'
-              element={
-                <UnProtectedRoute>
-                  <SignUp />
-                </UnProtectedRoute>
-              }
-            />
-            <Route
-              path='/sign-in'
-              element={
-                <UnProtectedRoute>
-                  <SignIn />
-                </UnProtectedRoute>
-              }
-            />
-            <Route
-              path='/dashboard'
-              element={
-                <ProtectedRoute>
-                  <DashboardLayout />
-                </ProtectedRoute>
-              }
-            >
-              <Route index element={<Dashboard />}></Route>
-            </Route>
-            <Route path='*' element={<Notfound />} />
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
+      <ConvexQueryCacheProvider>
+        <AuthProvider secretKey={secretkey}>
+          <BrowserRouter>
+            <Routes>
+              <Route path='/' element={<Home />} />
+              <Route
+                path='/sign-up'
+                element={
+                  <UnProtectedRoute>
+                    <SignUp />
+                  </UnProtectedRoute>
+                }
+              />
+              <Route
+                path='/sign-in'
+                element={
+                  <UnProtectedRoute>
+                    <SignIn />
+                  </UnProtectedRoute>
+                }
+              />
+              <Route
+                path='/dashboard'
+                element={
+                  <ProtectedRoute>
+                    <DashboardLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<Navigate to='search' replace />} />
+                <Route index path='search' element={<Search />} />
+                <Route index path='bookings' element={<Bookings />} />
+              </Route>
+              <Route path='*' element={<Notfound />} />
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
+      </ConvexQueryCacheProvider>
     </ConvexProvider>
   </StrictMode>,
 )
