@@ -8,6 +8,12 @@
   - [x] User password will be encrypted and stored in the database.
   - [x] While Signing in and Signing up the Username , Phone_no and Email will be checked weather the user is authenticated or not.
   - [x] Validation for email , password , Phone_no, Username while signing in and signing up is enabled
+- Train
+  - [x] The User can search For train using the source , destination and date of journey of the train.
+  - [x] Even If the user is not searching for the train the user should see all the lists of trains.
+  - [x] When the User Searches for the train the user should be able to click on the train from the list and add a booking.
+  - [ ] When the user books a seat on a train the trains seats avaliablity should change.
+  - [ ] When the user cancelled a booking the trains seats should update.
 
 # How to dev
 

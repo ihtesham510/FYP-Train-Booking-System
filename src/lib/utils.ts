@@ -19,3 +19,10 @@ export const decrypt = (cipherText: string, secret_key: string) => {
     return null
   }
 }
+
+export function capitalizeWords(str: string): string {
+  return str
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize the first letter and lowercase the rest
+    .join(' ')
+}

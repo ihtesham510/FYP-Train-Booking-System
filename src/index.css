@@ -1,3 +1,7 @@
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
 @tailwind base;
 @tailwind utilities;
 @tailwind components;

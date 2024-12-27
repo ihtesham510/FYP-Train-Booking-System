@@ -16,6 +16,8 @@ import DashboardLayout from './pages/dashboard/layout'
 import Search from './pages/dashboard/search'
 import Bookings from './pages/dashboard/bookings'
 import { ConvexQueryCacheProvider } from './cache/provider'
+import CheckOut from './pages/dashboard/checkout'
+import Ticket from './pages/dashboard/ticket'
 
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string)
 
@@ -60,8 +62,10 @@ createRoot(document.getElementById('root')!).render(
                 }
               >
                 <Route index element={<Navigate to='search' replace />} />
-                <Route index path='search' element={<Search />} />
-                <Route index path='bookings' element={<Bookings />} />
+                <Route path='search' element={<Search />} />
+                <Route path='search/checkout/:id' element={<CheckOut />} />
+                <Route path='bookings' element={<Bookings />} />
+                <Route path='bookings/ticket/:id' element={<Ticket />} />
               </Route>
               <Route path='*' element={<Notfound />} />
             </Routes>

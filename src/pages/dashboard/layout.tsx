@@ -10,7 +10,7 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/context/auth-context'
 import { LinkIcon, LogOutIcon, User, User2Icon } from 'lucide-react'
-import { Outlet } from 'react-router-dom'
+import { Link, Outlet, useLocation } from 'react-router-dom'
 
 import {
   Dialog,
@@ -161,6 +161,7 @@ export default function DashboardLayout() {
         toast.success('Successfully Updated')
       } catch (err) {
         toast.error('Failed to Update Profile')
+        console.log(err)
       } finally {
         toast.dismiss(t1)
         form.reset({
@@ -203,13 +204,36 @@ export default function DashboardLayout() {
         }
       }
     })()
-  }, [selectedFile])
+  }, [selectedFile, convex, user])
+
+  const { pathname } = useLocation()
+  const isActive = (path: string): boolean => pathname.split('/').includes(path)
 
   return (
     <>
       <Dialog>
         <header className='h-[10vh] w-full flex items-center justify-between px-10'>
           <h1 className='text-2xl font-semibold'>Dashboard</h1>
+          <nav>
+            <Link to='/dashboard/search'>
+              <Button
+                variant='link'
+                effect='hoverUnderline'
+                className={`font-semibold text-xl ${isActive('search') && 'text-primary/50'}`}
+              >
+                Search
+              </Button>
+            </Link>
+            <Link to='/dashboard/bookings'>
+              <Button
+                variant='link'
+                effect='hoverUnderline'
+                className={`font-semibold text-xl ${isActive('bookings') && 'text-primary/50'}`}
+              >
+                Bookings
+              </Button>
+            </Link>
+          </nav>
           <DropdownMenu>
             <DropdownMenuTrigger>
               <Avatar>

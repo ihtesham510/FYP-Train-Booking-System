@@ -13,7 +13,9 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as admin from "../admin.js";
 import type * as lib from "../lib.js";
+import type * as train from "../train.js";
 import type * as user from "../user.js";
 
 /**
@@ -25,7 +27,9 @@ import type * as user from "../user.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  admin: typeof admin;
   lib: typeof lib;
+  train: typeof train;
   user: typeof user;
 }>;
 export declare const api: FilterApi<
