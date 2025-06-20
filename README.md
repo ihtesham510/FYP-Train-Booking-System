@@ -36,6 +36,49 @@ Make sure you have a Github Account and you are logged-in in convex
 
 ```bash
 pnpm dev
+
+```
+
+# Set Environment Variables
+
+Run the following commands in the terminal
+
+```
+
+pnpm dlx conver env set CRYPTO_SECRET_KEY <add_your_Secret_key_here>
+
+```
+
+# Add Data
+
+Add data by making a `data.jsonl` file then ask Chat-GPT to do the following
+
+```txt
+Generate about 30 dummy train  data in jsonl format use pakistan's cities
+the following is the schema for the train
+
+name: v.string(),
+dateOfJourney: v.string(),
+trainNumber: v.string(),
+source: v.string(),
+destination: v.string(),
+arrivalTime: v.string(),
+departureTime: v.string(),
+distance: v.number(),
+seats: v.array(
+  v.object({
+    class: v.string(),
+    seats: v.number(),
+    price: v.number(),
+  }),
+),
+
+```
+
+then paste the data in the `data.jsonl` file then run the following command
+
+```bash
+npx convex import --table trains data.jsonl
 ```
 
 # How to Deploy
