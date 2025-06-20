@@ -55,6 +55,7 @@ const Search = () => {
   })
 
   const [query, setQuery] = useState<z.infer<typeof formSchema>>()
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -64,11 +65,16 @@ const Search = () => {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => setQuery(values)
 
-  const trains = useQuery(api.train.getTrains, {
-    source: query?.fromStation,
-    destination: query?.toStation,
-    dateOfJourney: query?.trainScheduleDate.toLocaleDateString() as any,
-  })
+  const trains = useQuery(
+    api.train.getTrains,
+    query
+      ? {
+          source: query?.fromStation,
+          destination: query?.toStation,
+          dateOfJourney: query?.trainScheduleDate.toLocaleDateString() as any,
+        }
+      : {},
+  )
   const stations = useQuery(api.train.getStations)
   const stationsData = stations
     ? stations.map(st => ({
@@ -83,6 +89,10 @@ const Search = () => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
+            onReset={() => {
+              form.reset()
+              setQuery(undefined)
+            }}
             className='space-y-8  w-[25%] max-w-3xl mx-auto py-10'
           >
             <FormField
@@ -246,7 +256,12 @@ const Search = () => {
                 </FormItem>
               )}
             />
-            <Button type='submit'>Submit</Button>
+            <div className='flex gap-2'>
+              <Button type='submit'>Submit</Button>
+              <Button type='reset' variant='outline'>
+                clear
+              </Button>
+            </div>
           </form>
         </Form>
         {trains && trains.length !== 0 ? (

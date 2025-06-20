@@ -38,12 +38,11 @@ export const getTrains = query({
     if (!args.source && !args.destination && !args.dateOfJourney)
       return await ctx.db.query('train').collect()
 
+    console.log(args)
     return await ctx.db
       .query('train')
-      .filter(q => q.eq(q.field('source'), args.source?.toLowerCase()))
-      .filter(q =>
-        q.eq(q.field('destination'), args.destination?.toLowerCase()),
-      )
+      .filter(q => q.eq(q.field('source'), args.source))
+      .filter(q => q.eq(q.field('destination'), args.destination))
       .filter(q => q.eq(q.field('dateOfJourney'), args.dateOfJourney))
       .collect()
   },
