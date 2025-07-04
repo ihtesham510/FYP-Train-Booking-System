@@ -25,7 +25,7 @@ const secretkey = import.meta.env.VITE_SECRET_KEY
 
 if (!secretkey) throw new Error('secret key must be provided')
 
-document.documentElement.classList.add('dark')
+// document.documentElement.classList.add('dark')
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

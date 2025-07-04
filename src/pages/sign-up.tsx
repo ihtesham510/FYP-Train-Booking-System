@@ -32,10 +32,29 @@ export default function SignUp() {
 
   const formSchema = z
     .object({
-      first_name: z.string().min(2).max(40),
-      last_name: z.string().min(2).max(40),
+      first_name: z
+        .string()
+        .regex(/^[^0-9]*$/, {
+          message: 'First name should not contain any numbers',
+        })
+        .min(2)
+        .max(40),
+      last_name: z
+        .string()
+        .regex(/^[^0-9]*$/, {
+          message: 'Last name should not contain any numbers',
+        })
+
+        .min(2)
+        .max(40),
       email: z.string().email(),
-      username: z.string().min(4).max(20),
+      username: z
+        .string()
+        .regex(/^[a-zA-Z]/, {
+          message: 'Username must start with a letter',
+        })
+        .min(4)
+        .max(20),
       gender: z.union([z.literal('male'), z.literal('female')]),
       phone_no: z.string().refine(isValidPhoneNumber, {
         message: 'Invalid phone number',
